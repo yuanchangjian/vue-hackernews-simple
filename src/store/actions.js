@@ -1,5 +1,6 @@
 export default {
-  setPath: ({ commit }, path) => {
-    commit('SET_PATH', path)
-  },
+    SET_PATH: ({ commit }, path) => {
+        commit('SET_PATH', path)
+        return Promise.resolve()
+    }
 }

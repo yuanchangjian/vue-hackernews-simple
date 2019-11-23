@@ -17,10 +17,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'public': path.resolve(__dirname, '../public'),
-      'vue$': 'vue/dist/vue.js',
-      '@': path.resolve(__dirname, '../src'),
-    },
+      'public': path.resolve(__dirname, '../public')
+    }
   },
   module: {
     noParse: /es6-promise\.js$/, // avoid webpack shimming process
@@ -48,13 +46,39 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
+        test: /\.styl(us)?$/,
+        use: isProd
+          ? ExtractTextPlugin.extract({
+              use: [
+                {
+                  loader: 'css-loader',
+                  options: { minimize: true }
+                },
+                'stylus-loader'
+              ],
+              fallback: 'vue-style-loader'
+            })
+          : ['vue-style-loader', 'css-loader', 'stylus-loader']
+      },
+      {
+        test: /\.(css|scss)$/,
         use: isProd
         ? ExtractTextPlugin.extract({
-            use: 'css-loader',
-            fallback: 'vue-style-loader'
+            fallback: 'vue-style-loader',
+            use: ['css-loader', 'sass-loader', {
+                  loader: 'sass-resources-loader',
+                  options: {
+                    resources: [path.resolve(__dirname, '../src/assets/styles/index.scss')]
+                  }
+                }
+            ],
           })
-        : ['vue-style-loader', 'css-loader']
+        : ['vue-style-loader', 'css-loader', 'sass-loader', {
+              loader: 'sass-resources-loader',
+              options: {
+                  resources: [path.resolve(__dirname, '../src/assets/styles/index.scss')]
+              }
+          }]
       }
     ]
   },
